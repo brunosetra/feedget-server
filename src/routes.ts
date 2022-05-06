@@ -13,10 +13,6 @@ routes.post("/feedbacks", async (req, res) => {
 
   await feedbackRepoPrisma.create({ type, comment, screenshot });
 
-  const screenshotHtml = screenshot
-    ? `<img src="${screenshot}" alt="Screenshot" style="max-width:500px;"/>`
-    : "";
-
   await mailService.send({
     subject: "Novo feedback no Feedget",
     body: [
@@ -24,7 +20,9 @@ routes.post("/feedbacks", async (req, res) => {
       `<p>Tipo do comentário: ${type}</p>`,
       `<p>Comentário: ${comment}</p>`,
       `<p>Screenshot</p>`,
-      screenshotHtml,
+      screenshot
+        ? `<img src="${screenshot}" alt="Screenshot" style="max-width:500px;"/>`
+        : ``,
       `</div>`,
     ].join("\n"),
   });
